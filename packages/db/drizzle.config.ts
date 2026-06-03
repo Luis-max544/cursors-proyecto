@@ -1,8 +1,9 @@
 import { defineConfig } from 'drizzle-kit'
-import "dotenv"
+import { config } from 'dotenv'
+import { resolve } from 'node:path'
 
-// DATABASE_URL must be set in the environment before running drizzle-kit commands.
-// From the repo root, use: DATABASE_URL=... pnpm --filter @nutrilearn/db db:generate
+config({ path: resolve(__dirname, '../../.env') })
+
 export default defineConfig({
   schema: './src/schema.ts',
   out: './migrations',

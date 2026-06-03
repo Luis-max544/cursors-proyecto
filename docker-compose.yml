@@ -11,14 +11,11 @@
 
 services:
   postgres:
-    # postgres:18 will resolve once PG18 reaches GA (expected ~Q4 2026).
-    # If this tag is not yet available, check hub.docker.com/_/postgres/tags?search=18
-    # and use the latest beta tag (e.g. postgres:18beta3).
-    image: postgres:18
+    image: postgres:16
     container_name: nutrilearn_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
