@@ -1,4 +1,5 @@
 import { defineConfig } from 'drizzle-kit'
+import "dotenv"
 
 // DATABASE_URL must be set in the environment before running drizzle-kit commands.
 // From the repo root, use: DATABASE_URL=... pnpm --filter @nutrilearn/db db:generate

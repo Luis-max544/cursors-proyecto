@@ -1,0 +1,54 @@
+# Infrastructure-only: PostgreSQL + Redis for local development.
+# The app runs natively via `pnpm dev` — it is NOT containerised here.
+#
+# Usage:
+#   pnpm infra:up      → start services in background
+#   pnpm infra:down    → stop containers (data volumes preserved)
+#   pnpm infra:logs    → tail logs from all services
+#
+# After first `infra:up`, run migrations:
+#   pnpm --filter @nutrilearn/db db:migrate
+
+services:
+  postgres:
+    # postgres:18 will resolve once PG18 reaches GA (expected ~Q4 2026).
+    # If this tag is not yet available, check hub.docker.com/_/postgres/tags?search=18
+    # and use the latest beta tag (e.g. postgres:18beta3).
+    image: postgres:18
+    container_name: nutrilearn_postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: nutrilearn
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d nutrilearn"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: nutrilearn_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
